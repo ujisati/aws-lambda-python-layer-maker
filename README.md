@@ -15,6 +15,7 @@ LayerMaker(
 
 The output should look like this:
 
+```
 layers/
   layer_1/
     layer.zip/
@@ -26,3 +27,4 @@ layers/
   layer_5/
     layer.zip/
     .../
+```
