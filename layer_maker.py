@@ -33,8 +33,8 @@ class LayerMaker:
             output_dir = Path(output_dir)
 
         assert root_dir.is_dir()
-        assert output_dir.is_dir()
         output_dir.mkdir(exist_ok=True, parents=True)
+        assert output_dir.is_dir()
 
         self.root_dir = root_dir
         self.output_dir = output_dir

@@ -3,6 +3,7 @@ import random
 import shutil
 from pathlib import Path
 from typing import Iterable
+from pytest_mock import MockerFixture
 
 import pytest
 
@@ -70,9 +71,21 @@ def test_layer_maker(layer_maker: LayerMaker, directory: Path) -> None:
     assert Path("test/layers/layer_3/layer.zip").exists()
     assert Path("test/layers/layer_4/layer.zip").exists()
     assert Path("test/layers/layer_5/layer.zip").exists()
+    assert layer_maker.layer_paths[0] == Path("test/layers/layer_1/layer.zip")
+    assert layer_maker.layer_paths[1] == Path("test/layers/layer_2/layer.zip")
+    assert layer_maker.layer_paths[2] == Path("test/layers/layer_3/layer.zip")
+    assert layer_maker.layer_paths[3] == Path("test/layers/layer_4/layer.zip")
+    assert layer_maker.layer_paths[4] == Path("test/layers/layer_5/layer.zip")
 
 
 def test_get_size_sorted_dir(layer_maker: LayerMaker, directory: Path) -> None:
     sorted_dir = layer_maker._get_size_sorted_dir(directory)
     assert "dir_biggest" in sorted_dir[0][0].name
     assert "file_smallest" in sorted_dir[-1][0].name
+
+
+def test_publish(layer_maker: LayerMaker, directory: Path, mocker: MockerFixture) -> None:
+    mocker.patch("layer_maker.boto3.client")
+    layer_maker.make()
+    responses = layer_maker.publish("test-layer-%d", "test publish layer")
+    assert len(responses) == 5
