@@ -1,8 +1,11 @@
 # AWS Lambda Python Layer Maker
 
-This is a little script I wrote to make my job easier. Use it or don't.
+![Static Badge](https://img.shields.io/badge/python-3.11-blue?logo=python)
 
-It will basically just naively stuff files into layer dirs (up to 5 since that is the limit) and ensure they are all less than 50 MB compressed.
+This is a little script I wrote to make my job easier.
+
+It sorts the site-packages top-level files and dirs by compressed size, and then puts biggest files into layers first, putting files into the same layer until we know all files remaining can't fit, and moving onto next layer to do the same.
+
 Run the code on the lambda architecture you're targeting in case there are compiled dependencies.
 
 
@@ -19,12 +22,12 @@ The output should look like this:
 layers/
   layer_1/
     layer.zip/
-    .../
+    python/
   layer_2/
     layer.zip/
-    .../
+    python/
   .../
   layer_5/
     layer.zip/
-    .../
+    python/
 ```
