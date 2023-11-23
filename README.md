@@ -21,13 +21,13 @@ The output should look like this:
 ```
 layers/
   layer_1/
-    layer.zip/
+    layer.zip
     python/
   layer_2/
-    layer.zip/
+    layer.zip
     python/
   .../
   layer_5/
-    layer.zip/
+    layer.zip
     python/
 ```
