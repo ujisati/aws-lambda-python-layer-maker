@@ -4,7 +4,7 @@ import shutil
 import subprocess as sp
 from os.path import join
 from pathlib import Path
-from typing import Iterable, Tuple
+from typing import Iterable, Tuple, Any
 
 import boto3
 from mypy_boto3_lambda.type_defs import PublishLayerVersionResponseTypeDef
@@ -47,7 +47,7 @@ class LayerMaker:
         self._exclude.extend(exclude or [])
 
     def publish(
-        self, layer_name: str, description: str
+        self, layer_name: str, description: str, **kwargs: Any
     ) -> list[PublishLayerVersionResponseTypeDef]:
         client = boto3.client("lambda")
 
@@ -57,7 +57,7 @@ class LayerMaker:
                 zip_content = f.read()
 
             response = client.publish_layer_version(
-                LayerName=layer_name.format(i), Description=description, Content={"ZipFile": zip_content}
+                LayerName=layer_name.format(i), Description=description, Content={"ZipFile": zip_content}, **kwargs
             )
             responses.append(response)
 
