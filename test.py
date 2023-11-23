@@ -3,9 +3,9 @@ import random
 import shutil
 from pathlib import Path
 from typing import Iterable
-from pytest_mock import MockerFixture
 
 import pytest
+from pytest_mock import MockerFixture
 
 from layer_maker import LayerMaker
 
