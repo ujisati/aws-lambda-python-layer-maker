@@ -10,10 +10,11 @@ Run the code on the lambda architecture you're targeting in case there are compi
 
 
 ```python
-LayerMaker(
+lm = LayerMaker(
     root_dir="/home/.../venv/lib/python3.11/site-packages/",
     output_dir="/home/.../layers/"
-).make()
+)
+lm.make()
 ```
 
 The output should look like this:
@@ -31,3 +32,11 @@ layers/
     layer.zip
     python/
 ```
+
+Publish the layers like so using a format string for the name:
+
+```python
+lm.publish(layer_name="layer-number-{}", description="some description")
+```
+
+This would publish layer-number-1, layer-number-2, ..., upto layer-number-5. 

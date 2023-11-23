@@ -1,11 +1,13 @@
 import gzip
 import io
-import os
 import shutil
 import subprocess as sp
 from os.path import join
 from pathlib import Path
 from typing import Iterable, Tuple
+
+import boto3
+from mypy_boto3_lambda.type_defs import PublishLayerVersionResponseTypeDef
 
 
 class LayerMaker:
@@ -36,12 +38,30 @@ class LayerMaker:
 
         self.root_dir = root_dir
         self.output_dir = output_dir
+        self.layer_paths: list[Path] = []
         self._max_layer_size = 50_000_000
         self._total_layers = 0
         self._layer_size = 0
         self._paths_in_layer: list[Path] = []
         self._exclude: list[str] = ["boto", "urllib"]
         self._exclude.extend(exclude or [])
+
+    def publish(
+        self, layer_name: str, description: str
+    ) -> list[PublishLayerVersionResponseTypeDef]:
+        client = boto3.client("lambda")
+
+        responses = []
+        for (i, p) in enumerate(self.layer_paths):
+            with open(p, "rb") as f:
+                zip_content = f.read()
+
+            response = client.publish_layer_version(
+                LayerName=layer_name.format(i), Description=description, Content={"ZipFile": zip_content}
+            )
+            responses.append(response)
+
+        return responses
 
     def make(self) -> None:
         # get a list of sorted paths
@@ -91,6 +111,7 @@ class LayerMaker:
             shell=True,
             check=True,
         )
+        self.layer_paths.append(zip_output_dir.joinpath("layer.zip"))
 
     def _is_layer_overflow(self, additional_size: int) -> bool:
         assert additional_size <= self._max_layer_size, "Can't possibly fit these layers on lambda"
