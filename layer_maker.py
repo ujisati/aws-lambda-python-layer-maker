@@ -76,7 +76,7 @@ class LayerMaker:
                     continue
 
                 # we can add the file to the layer
-                print("appending layer with size B: ", p, size)
+                print("appending layer with size MB: ", p, size / 1_000_000)
                 self._paths_in_layer.append(p)
                 self._layer_size += size
 
@@ -89,11 +89,12 @@ class LayerMaker:
         assert not self._paths_in_layer
 
     def _make_layer(self) -> None:
-        self._layer_size = 0
-        self._total_layers += 1
-        assert self._total_layers <= 5, "Can't possibly fit these layers on lambda"
         print("creating layer with dirs: ", self._paths_in_layer)
         print("layer size MB: ", self._layer_size / 1_000_000)
+        self._layer_size = 0
+        self._total_layers += 1
+        print("layer number: ", self._total_layers)
+        assert self._total_layers <= 5, "Can't possibly fit these layers on lambda"
         zip_output_dir = self.output_dir.joinpath("layer_%d" % self._total_layers)
         layer_files_dir = zip_output_dir.joinpath("python")
         for p in self._paths_in_layer:
