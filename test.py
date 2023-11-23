@@ -1,18 +1,21 @@
-import random
 import os
+import random
 import shutil
 from pathlib import Path
 from typing import Iterable
-from layer_maker import LayerMaker
 
 import pytest
 
-def write_file(root: Path, filename: str | int, size: int):
+from layer_maker import LayerMaker
+
+
+def write_file(root: Path, filename: str | int, size: int) -> None:
     path = root.joinpath(str(filename))
     path.parent.mkdir(exist_ok=True)
 
     with open(path, "wb") as f:
         f.write(os.urandom(size))
+
 
 @pytest.fixture
 def layer_maker() -> Iterable[LayerMaker]:
@@ -30,7 +33,6 @@ def layer_maker() -> Iterable[LayerMaker]:
 @pytest.fixture
 def directory() -> Iterable[Path]:
     root = Path("./test/site-packages")
-
 
     dir_1 = root.joinpath("dir_biggest")
     write_file(dir_1, f"file_biggest", 1000)
@@ -54,7 +56,7 @@ def directory() -> Iterable[Path]:
         shutil.rmtree(root.parent)
 
 
-def test_layer_maker(layer_maker: LayerMaker, directory: Path):
+def test_layer_maker(layer_maker: LayerMaker, directory: Path) -> None:
     layer_maker.make()
     assert Path("test/layers/layer_1/python/dir_biggest/file_biggest").exists()
     assert Path("test/layers/layer_2/python/dir_2/1").exists()
@@ -69,10 +71,8 @@ def test_layer_maker(layer_maker: LayerMaker, directory: Path):
     assert Path("test/layers/layer_4/layer.zip").exists()
     assert Path("test/layers/layer_5/layer.zip").exists()
 
-    
-def test_get_size_sorted_dir(layer_maker: LayerMaker, directory: Path):
+
+def test_get_size_sorted_dir(layer_maker: LayerMaker, directory: Path) -> None:
     sorted_dir = layer_maker._get_size_sorted_dir(directory)
     assert "dir_biggest" in sorted_dir[0][0].name
     assert "file_smallest" in sorted_dir[-1][0].name
-
-

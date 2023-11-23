@@ -29,7 +29,7 @@ class LayerMaker:
         assert output_dir.is_dir()
         output_dir.mkdir(exist_ok=True, parents=True)
 
-        self.root_dir = root_dir 
+        self.root_dir = root_dir
         self.output_dir = output_dir
         self._max_layer_size = 50_000_000
         self._total_layers = 0
@@ -38,10 +38,9 @@ class LayerMaker:
         self._exclude: list[str] = ["boto", "urllib"]
         self._exclude.extend(exclude or [])
 
-
     def make(self) -> None:
         # get a list of sorted paths
-        sorted_dir = self._get_size_sorted_dir(self.root_dir) 
+        sorted_dir = self._get_size_sorted_dir(self.root_dir)
         while sorted_dir:
             unhandled = []
             for (p, size) in sorted_dir:
@@ -50,7 +49,7 @@ class LayerMaker:
                 if self._is_layer_overflow(size):
                     unhandled.append((p, size))
                     continue
-                
+
                 # we can add the file to the layer
                 print("appending layer with size B: ", p, size)
                 self._paths_in_layer.append(p)
@@ -59,7 +58,7 @@ class LayerMaker:
             # we've gone through all the files that could possibly fit in the layer, so we make it
             self._make_layer()
             sorted_dir = unhandled
-   
+
         # # Make sure valid finished state
         assert self._layer_size == 0
         assert not self._paths_in_layer
@@ -123,10 +122,7 @@ class LayerMaker:
 
     @staticmethod
     def _get_compressed_dir_size(path: Path) -> int:
-        return sum(
-            LayerMaker._get_compressed_size(p)
-            for p in path.iterdir()
-        )
+        return sum(LayerMaker._get_compressed_size(p) for p in path.iterdir())
 
     @staticmethod
     def _get_compressed_file_size(path: Path | str) -> int:
@@ -138,4 +134,3 @@ class LayerMaker:
                 gzip_file.write(file_contents)
 
             return len(bytes_io.getvalue())
-
