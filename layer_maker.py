@@ -24,7 +24,12 @@ class LayerMaker:
     putting files into the same layer until we know all files remaining can't fit, and moving onto next layer to do the same.
     """
 
-    def __init__(self, root_dir: Path, output_dir: Path, exclude: list | None = None):
+    def __init__(self, root_dir: Path | str, output_dir: Path | str, exclude: list | None = None):
+        if isinstance(root_dir, str):
+            root_dir = Path(root_dir)
+        if isinstance(output_dir, str):
+            output_dir = Path(output_dir)
+
         assert root_dir.is_dir()
         assert output_dir.is_dir()
         output_dir.mkdir(exist_ok=True, parents=True)
