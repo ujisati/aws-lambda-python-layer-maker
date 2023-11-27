@@ -6,13 +6,10 @@ This tool solves the problem of python lambda functions that have dependencies t
 
 Run the code on the lambda architecture you're targeting in case there are compiled dependencies.
 
+Run like so:
 
-```python
-lm = LayerMaker(
-    root_dir="/home/.../venv/lib/python3.11/site-packages/",
-    output_dir="/home/.../layers/"
-)
-lm.make()
+```shell
+python3.11 layer_maker.py --root /home/.../lib/python3.10/site-packages/ --output ./layers/ --exclude pycache pytest --publish --name some-layer-
 ```
 
 The output should look like this:
@@ -31,10 +28,6 @@ layers/
     python/
 ```
 
-Publish the layers like so using a format string for the name:
+The layer name will have the layer number appended to it, so "layer-number-" will publish as
 
-```python
-lm.publish(layer_name="layer-number-{}", description="some description")
-```
-
-This would publish layer-number-1, layer-number-2, ..., upto layer-number-5. 
+layer-number-1, layer-number-2, ..., upto layer-number-5. 

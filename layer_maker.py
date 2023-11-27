@@ -1,3 +1,4 @@
+import argparse
 import gzip
 import io
 import shutil
@@ -57,7 +58,7 @@ class LayerMaker:
                 zip_content = f.read()
 
             response = client.publish_layer_version(
-                LayerName=layer_name.format(i),
+                LayerName=layer_name + f"{i}",
                 Description=description,
                 Content={"ZipFile": zip_content},
                 **kwargs,
@@ -164,3 +165,26 @@ class LayerMaker:
                 gzip_file.write(file_contents)
 
             return len(bytes_io.getvalue())
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="LayerMaker CLI")
+    parser.add_argument("--root", required=True, help="Root directory path")
+    parser.add_argument("--output", required=True, help="Output directory path")
+    parser.add_argument(
+        "--exclude",
+        nargs="+",
+        default=[],
+        help="List of directories or files to exclude, separated by spaces",
+    )
+    parser.add_argument(
+        "--publish", action="store_true", help="Whether to publish the layers or not"
+    )
+    parser.add_argument("--name", help="Layer name to publish")
+    parser.add_argument("--description", default="", help="Layer Description")
+    args = parser.parse_args()
+
+    lm = LayerMaker(root_dir=args.root, output_dir=args.output, exclude=args.exclude)
+    lm.make()
+    if args.publish:
+        lm.publish(layer_name=args.name, description=args.description)
