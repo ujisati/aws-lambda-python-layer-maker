@@ -8,7 +8,6 @@ ENV AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
 ENV AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
 
 RUN yum install git -y
-RUN python -m pip install nox
 COPY . /home/app
 WORKDIR /home/app
 RUN python -m venv venv
