@@ -4,7 +4,14 @@
 
 This tool solves the problem of python lambda functions that have dependencies that don't easily fit into one layer. It sorts the site-packages top-level files and dirs by compressed size, and then puts biggest files into layers first, putting files into the same layer until we know all files remaining can't fit, and moving onto next layer to do the same.
 
-Run the code on the lambda architecture you're targeting in case there are compiled dependencies.
+Run the code on the lambda architecture you're targeting in case there are compiled dependencies. There is an example Dockerfile for how you might do this: 
+
+```shell
+docker build -t lambda -f Dockerfile \
+  --build-arg AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) \
+  --build-arg AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id) \
+  --build-arg AWS_DEFAULT_REGION=us-west-2 .
+```
 
 Run like so:
 
