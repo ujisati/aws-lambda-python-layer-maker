@@ -14,7 +14,7 @@ RUN python -m venv venv
 RUN git clone https://github.com/ujisati/aws-lambda-python-layer-maker 
 WORKDIR aws-lambda-python-layer-maker
 RUN pip install -r requirements.txt
-RUN python layer_maker.py --root /home/app/venv/lambda/lib/python3.10/site-packages/ --output ./layers/ --exclude pycache pytest coverage --publish --name lambda-layer-
+RUN python layer_maker.py --root /home/app/venv/lib/python3.10/site-packages/ --output ./layers/ --exclude pycache pytest coverage --publish --name lambda-layer-
 
 ENTRYPOINT ["/bin/bash"]
 
